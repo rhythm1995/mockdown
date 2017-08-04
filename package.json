@@ -15,5 +15,8 @@
   "bugs": {
     "url": "https://github.com/rhythm1995/mockdown/issues"
   },
-  "homepage": "https://github.com/rhythm1995/mockdown#readme"
+  "homepage": "https://github.com/rhythm1995/mockdown#readme",
+  "devDependencies": {
+    "json-server": "^0.12.0"
+  }
 }
