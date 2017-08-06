@@ -91,13 +91,35 @@ module.exports = {
     },
 
     //返回指定长度整形数组：三个参数（最小，最大，长度）
-    intArrayByLength(min=0,max=1,length=1){
+    intArrayByLength(min = 0, max = 1, length = 1) {
         let array = [];
-        for(let i=0;i<length;i++){
-            array.push(integerNumber(min,max));
+        for (let i = 0; i < length; i++) {
+            array.push(integerNumber(min, max));
         }
         return array;
     },
 
     //返回指定长度小数数组：三个参数（最小，最大，长度）
+    floatArrayByLength(min = 0, max = 1, length = 1) {
+        let array = [];
+        for (let i = 0; i < length; i++) {
+            array.push(floatNumber(min, max));
+        }
+        return array;
+    },
+
+    //从数组中随机选出一个元素：一个参数（数组）
+    selectElementFromArray(arr) {
+        const max = arr.length - 1;
+        return arr[this.integerNumber(0, max)];
+    },
+
+    //从数组中随机出指定数目的元素组成新数组：两个参数（数组，数量）
+    selectArrFromArray(arr, num = 1) {
+        let returnArr = [];
+        for (let i = 0; i <= num - 1; i++) {
+            returnArr.push(this.selectElementFromArray(arr));
+        }
+        return returnArr;
+    }
 };
