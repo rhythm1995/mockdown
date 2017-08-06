@@ -1,47 +1,20 @@
-'use strict'
-
-const http = require('http');
+/**
+ * 解析api目录下文件
+ */
 const fs = require('fs');
+const apidata = require('./apidata');
 
+//把|name|string|Sam,Just,Cary|转换成对象的算法
 
-// Walk dir
-function walk(path) {
-    let fileList = [];
-    const dirList = fs.readdirSync(path);
+    fs.readFile('./api/db.md',(err,data) => {
+        //最终文件中写入的对象
 
-    dirList.forEach(function (item) {
-        if (fs.statSync(path + '/' + item).isFile()) {
-            fileList.push(path + '/' + item);
+        if(err){
+            throw err;
         }
-    });
-
-    dirList.forEach(function (item) {
-        if (fs.statSync(path + '/' + item).isDirectory()) {
-            walk(path + '/' + item);
-        }
-    });
-    return fileList;
-}
-
-// 解析md文件
-function readMarkdown(){
-    fs.read(Buffer);
-}
-
-
-//创建服务器
-function createServer(){
-    var server = http.createServer((res,req) => {
-    
-});
-}
+        let apiData = new apidata.ApiData(data);
 
 
 
-
-
-/*
-var server = http.createServer((res, req) => {
-
-})
-*/
+        console.log(apiData)
+    })
