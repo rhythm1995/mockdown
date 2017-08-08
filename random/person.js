@@ -1,11 +1,14 @@
 /*
 * 主要用于生成一些个人信息
-* 姓名、手机号
+* 姓名、手机号、身份证号、IP地址、邮箱、密码、公司名
 */
 const base = require('./base');
+const date = require('./date');
+const address = require('./address');
+
 
 module.exports = {
-    //随机生成中文名
+    //生成中文名
     initChineseName() {
         const familyNames = [
             "赵", "钱", "孙", "李", "周", "吴", "郑", "王", "冯", "陈",
@@ -31,10 +34,10 @@ module.exports = {
             "佳钰", "佳玉", "晓庆", "一鸣", "语晨", "添池", "添昊", "雨泽", "雅晗", "雅涵",
             "清妍", "诗悦", "嘉乐", "晨涵", "天赫", "玥傲", "佳昊", "天昊", "萌萌", "若萌"
         ];
-        return familyNames[base.integerNumber(0, 99)] + givenNames[base.integerNumber(0, 99)];
+        return familyNames[base.integerNumber(0, 99)] + givenNames[base.integerNumber(0, 100)];
     },
 
-    //随机生成英文名
+    //生成英文名
     initEnglishName() {
         const givenNames = [
             "Smith", "Johnson", "Williams", "Brown", "Jones",
@@ -60,11 +63,11 @@ module.exports = {
             "Gary", "Timothy", "Jose", "Larry", "Jeffrey",
             "Frank", "Scott", "Eric"
         ];
-        return givenNames[base.integerNumber(0, 99)] + '·' + familyNames[base.integerNumber(0, 99)];
+        return givenNames[base.integerNumber(0, 31)] + ' ' + familyNames[base.integerNumber(0, 65)];
     },
 
-    //随机生成英文译名
-    initTranslateName() {
+    //生成英文译名
+    initEnglishTranslateName() {
         const givenNames = [
             "埃玛", "伊莎贝拉", "艾米丽", "麦迪逊", "阿娃", "奥利维亚",
             "索菲亚", "艾比盖尔", "伊丽莎白", "克洛伊", "沙曼萨", "艾迪生",
@@ -95,9 +98,119 @@ module.exports = {
         return givenNames[base.integerNumber(0, 99)] + '·' + familyNames[base.integerNumber(0, 49)];
     },
 
-    //随机手机号生成
+    //生成日本姓名
+    initJapaneseName() {
+        const familyNames = [
+            "佐藤", "铃木", "高桥", "田中", "渡边", "伊藤", "山本", "中村", "小林", "大久保",
+            "加藤", "吉田", "山田", "佐佐木", "山口", "松本", "井上", "木村", "林", "清水",
+            "山崎", "中岛", "池田", "酒井", "桥本", "山下", "森", "石川", "前田", "小川",
+            "藤田", "冈田", "後藤", "长谷川", "石井", "村上", "近藤", "坂本", "远藤", "青木",
+            "藤井", "西村", "福田", "岛田", "三浦", "藤原", "宫崎", "松田", "小野", "北原"
+        ];
+        const givenNames = [
+            "真纪", "美沙", "翔子", "里奈", "七恵", "真白", "直子", "纪子", "梨香", "佳乃",
+            "凉", "里代", "千春", "裕子", "太郎", "次郎", "千裕", "弥代", "智子", "浜崎",
+            "孝允", "博文", "矢崇", "友实", "千姬", "龙马", "公望", "美奈子", "明美", "佳乃"
+        ];
+        return familyNames[base.integerNumber(0, 49)] + givenNames[base.integerNumber(0, 29)];
+    },
+
+    //手机号生成
     initPhoneNumber() {
         const prefixArray = ["130", "131", "132", "156", "155", "133", "153", "189", "139", "138", "137", "136", "135", "134", "159", "158", "157", "150", "151", "152", "188"];
-        return prefixArray[base.integerNumber(0, 20)] + base.randomStringByLength(8, false, number);
+        return prefixArray[base.integerNumber(0, 20)] + base.randomStringByLength(8, false, 'number');
     },
+
+
+    /*
+    * 生成身份证号码
+    * 这个比较麻烦，不可能生成绝对正确的，只能说可以通过验证，并且能提取到一些信息
+    * 接受参数：（字符串，字符串，字符串）（指定省份，指定生日到任意一位，指定性别）
+    * 组成：省份+随机四位数+随机生成yyyyMMDD的一个日期字符串+随机两位数+确定性别的一位数+校验码
+    */
+    initChineseId(province = undefined, birth = 'yyyymmdd', gender = undefined) {
+        //省份映射
+        const provinces = new Map([
+            [11, "北京"], [12, "天津"], [13, "河北"], [14, "山西"], [15, "内蒙古"],
+            [21, "辽宁"], [22, "吉林"], [23, "黑龙江"], [31, "上海"], [32, "江苏"],
+            [33, "浙江"], [34, "安徽"], [35, "福建"], [36, "江西"], [37, "山东"], [41, "河南"],
+            [42, "湖北"], [43, "湖南"], [44, "广东"], [45, "广西"], [46, "海南"], [50, "重庆"],
+            [51, "四川"], [52, "贵州"], [53, "云南"], [54, "西藏"], [61, "陕西"], [62, "甘肃"],
+            [63, "青海"], [64, "宁夏"], [65, "新疆"], [71, "台湾"], [81, "香港"], [82, "澳门"], [91, "国外"]
+        ]);
+        const provincesNumber = [
+            "11", "12", "13", "14", "15",
+            "21", "22", "23", "31", "32",
+            "33", "34", "35", "36", "37", "41",
+            "42", "43", "44", "45", "46", "50",
+            "51", "52", "53", "54", "61", "62",
+            "63", "64", "65", "71", "81", "82", "91"
+        ];
+
+        let provinceNumber, birthNumber, genderNumber;
+        //确定省份数子
+        if (province) {
+            provinceNumber = provinces.get('province');
+        } else {
+            provinceNumber = base.selectElementFromArray(provincesNumber);
+        }
+        //确定日期数字
+        if (birth !== 'yyyymmdd') {
+            const length = birth.length;
+            let regular = new RegExp(`\\w{${length}}`);
+            birthFormat = date.date('yyyymmdd'.replace(regular, birth));
+        }
+        birthNumber = date.date(birth);
+        //确定性别数字
+        if (gender === undefined) {
+            genderNumber = base.integerNumber(0, 9);
+        } else if (gender === '男') {
+            genderNumber = base.integerNumber(0, 4) * 2 + 1;
+        } else if (gender === '女') {
+            genderNumber = base.integerNumber(0, 4) * 2;
+        }
+
+        return `${provinceNumber}${base.randomStringByLength(4, false, 'number')}${birthNumber}${base.randomStringByLength(2, false, 'number')}${genderNumber}${base.randomStringByLength(1, false, 'number')}`;
+    },
+
+
+    //生成IP地址
+    initIpAddress() {
+        return base.integerNumber(192, 223) + '.' + base.integerNumber(0, 255) + '.' + base.integerNumber(0, 255) + '.' + base.integerNumber(0, 254)
+    },
+
+    //生成电子邮箱
+    initEmail() {
+        const mails = ['gmail', 'qq', 'hotmail', '163', '126', 'yahoo', 'sina', 'outlook'];
+        return `${this.initEnglishName().replace(/\s/, '')}@${base.selectElementFromArray(mails)}.com`
+    },
+
+    //生成8到16位密码
+    initPassword() {
+        const number = base.integerNumber(8, 16);
+        return base.randomStringByLength(number, false);
+    },
+
+    //生成公司名
+    initCompanyName() {
+        const companys = [
+            '鹏', '腾', '宏', '伟', '骁', '永', '吉', '先', '君', '依',
+            '昌', '哲', '营', '舒', '曙', '廷', '渲', '梦', '瑜', '菏',
+            '凤', '叶', '卫', '乐', '飞', '福', '皇', '嘉', '达', '佰',
+            '美', '元', '亮', '名', '欧', '特', '辰', '康', '讯', '聪',
+            '垒', '蕾', '瀚', '钧', '思', '正', '成', '翔', '隆', '东',
+            '森', '迪', '赛', '睿', '艾', '高', '德', '雅', '格', '纳',
+            '欣', '亿', '维', '锐', '菲', '佳', '沃', '晟', '捷', '臻',
+            '燕', '霖', '霏', '莲', '灿', '颜', '麒', '韬', '露', '鹤',
+            '骄', '厅', '湾', '凡', '可', '巧', '弘', '禾', '竹', '多',
+            '帆', '秀', '旺', '融', '誉', '际', '巨', '骄', '为', '诚',
+            '妙', '英', '虹', '芬', '馨', '尼', '迈', '群', '拓', '建',
+            '江', '雷', '天', '策', '优', '易', '威', '玛', '日', '伦',
+            '道', '发', '唯', '一', '才', '月', '丹', '文', '立', '玉',
+            '平', '同', '志', '宜', '林', '奇', '政', '朋', '致', '春',
+            '盈', '泓', '品', '庭', '展', '朔', '轩', '育', '航', '津',
+            '启', '振', '聆', '翌', '迎', '常', '浩', '茗', '杰', '智'
+        ];
+        return `${address.city()}${base.selectElementFromArray(companys)}${base.selectElementFromArray(companys)}有限公司`
+    }
 };
