@@ -14,7 +14,7 @@ module.exports = {
         return Math.floor(min + Math.random() * (max - min));
     },
 
-    //生成指定位数的浮点数，改文件调用
+    //生成指定位数的浮点数，该文件调用
     _floatByPlace(num = 1) {
         let result = "";
         for (let i = 0; i < num; i++)
@@ -28,6 +28,11 @@ module.exports = {
         let int = this.integer(parseInt(min), parseInt(max));
         let float = this._floatByPlace(digit);
         return `${int}.${float}`;
+    },
+
+    //自增
+    incrementNumber(base=0,n=1){
+        return base+n;
     },
 
     //判断一个字符的基础类型：{小写，大写，数字，符号}
@@ -76,6 +81,16 @@ module.exports = {
             pwd += chars.charAt(Math.floor(Math.random() * (maxPos + 1)));
         }
         return pwd;
+    },
+
+    //随机生成段落
+    initText(min=50,max=500){
+        const number = integerNumber(min,max);
+        let text = [];
+        for(let i=0;i<=number;i++){
+            text.push()
+        }
+        return text;
     },
 
     //返回一个基础类型的字符：{小写，大写，数字，符号}
