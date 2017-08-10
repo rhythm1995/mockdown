@@ -88,14 +88,16 @@ module.exports = {
         max = max === undefined ? new Date() : max;
         return new Date(Math.random() * (max.getTime() - min.getTime()));
     },
+    // 生成一个随机的时间戳
+    timestamp(){
+        return this._randomDate().getTime();
+    },
+
     // 返回一个随机的日期字符串，参数表示模式
     date(format='yyyy-MM-dd') {
         return this._formatDate(this._randomDate(), format);
     },
-    // 返回一个随机的日期字符串。
-    date(format='yyyy-MM-dd') {
-        return this._formatDate(this._randomDate(), format);
-    },
+
     // 返回一个随机的时间字符串。
     time(format='HH:mm:ss') {
         return this._formatDate(this._randomDate(), format);
