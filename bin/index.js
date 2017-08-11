@@ -5,10 +5,6 @@
 
 const fs = require('fs');
 const apidata = require('./apidata');
-const base = require('./base');
-const path = require('path');
-const randexp = require('randexp');
-const address = require('./address');
 const mock = require('./mock');
 
 
